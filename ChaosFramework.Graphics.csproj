@@ -26,7 +26,16 @@
   </ItemGroup>
 
   <!-- References -->
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Platform.Windows.targets" />
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Primitives.targets" />
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.Collections.targets" />
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.Core.targets" />
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.IO.targets" />
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.Math.targets" />
+  <Import Project="submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.Shapes.targets" />
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
 
   <!-- Analyzers -->
