@@ -24,6 +24,7 @@ namespace ChaosFramework.Graphics
 
             public LockedBits(Bitmap bmp, Rectangle rect, ImageLockMode lockMode, PixelFormat pixelFormat)
             {
+                this.bmp = bmp;
                 data = bmp.LockBits(rect, lockMode, pixelFormat);
             }
 
