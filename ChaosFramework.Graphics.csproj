@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Project Metadata -->
+  <PropertyGroup>
+    <AssemblyName>ChaosFramework.Graphics</AssemblyName>
+    <RootNamespace>ChaosFramework.Graphics</RootNamespace>
+    <ProjectGuid>{7088DB22-E437-4DBC-9F8C-0F433ACE0558}</ProjectGuid>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- Properties -->
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.Targets/Properties/Common.targets" />
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.Targets/Properties/OutputType/Library.targets" />
+
+  <!-- Configurations -->
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.Targets/Configurations.targets" />
+
+  <!-- Included Files -->
+  <ItemGroup>
+    <Compile Include="source/**/*.cs" />
+  </ItemGroup>
+
+  <!-- References -->
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Platform.Windows.targets" />
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Primitives.targets" />
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Debug.targets" />
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.IO.targets" />
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.Math.targets" />
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.Shapes.targets" />
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
+  </ItemGroup>
+
+  <!-- Analyzers -->
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/Analyzers/ChaosAnalyzers.CleanCode.targets" />
+
+  <!-- Cleanup Task -->
+  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/BuildTasks/ChaosBuild.CodeFormatter.Tasks.ChangedProjectFiles.targets" />
+
+</Project>
