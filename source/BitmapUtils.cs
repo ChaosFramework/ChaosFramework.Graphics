@@ -200,7 +200,7 @@ namespace ChaosFramework.Graphics
             return clone;
         }
 
-        public static Bitmap CutBitmap(Bitmap src, Rectangle rect)
+        public static unsafe Bitmap CutBitmap(Bitmap src, Rectangle rect)
         {
             if (src.Width < rect.Right || src.Height < rect.Bottom)
                 throw new ArgumentException("The provided rectangle exceeds the image bounds.", nameof(rect));
@@ -212,10 +212,10 @@ namespace ChaosFramework.Graphics
                 using (LockedBits newData = new LockedBits(dest, new Rectangle(0, 0, dest.Width, dest.Height), ImageLockMode.WriteOnly, dest.PixelFormat))
                 {
                     for (int y = 0; y < rect.Height; y++)
-                        ChaosUtil.Platform.Windows.MicrosoftVisualCppRuntime.memory.memcpy.Invoke(
-                            IntPtr.Add(newData.Scan0, y * newData.Stride),
-                            IntPtr.Add(oldData.Scan0, y * oldData.Stride),
-                            (uint)rect.Width * (uint)drawingPixelFormatSizes[src.PixelFormat] / 8u
+                        System.Runtime.InteropServices.NativeMemory.Copy(
+                            (void*)IntPtr.Add(newData.Scan0, y * newData.Stride),
+                            (void*)IntPtr.Add(oldData.Scan0, y * oldData.Stride),
+                            (UIntPtr)((uint)rect.Width * (uint)drawingPixelFormatSizes[src.PixelFormat] / 8u)
                             );
 
                     return dest;
@@ -303,7 +303,7 @@ namespace ChaosFramework.Graphics
             return rect;
         }
 
-        public static void CopyPixels(Bitmap src, Bitmap dest, Bounds2i srcRect, Vector2i position)
+        public static unsafe void CopyPixels(Bitmap src, Bitmap dest, Bounds2i srcRect, Vector2i position)
         {
             if (src.PixelFormat != dest.PixelFormat)
                 throw new ArgumentException("Source and destination pixel formats do not match.");
@@ -318,10 +318,10 @@ namespace ChaosFramework.Graphics
             using (LockedBits destData = new LockedBits(dest, destRect, ImageLockMode.WriteOnly, dest.PixelFormat))
             {
                 for (int y = 0; y < srcRect.height; y++)
-                    ChaosUtil.Platform.Windows.MicrosoftVisualCppRuntime.memory.memcpy.Invoke(
-                        IntPtr.Add(destData.Scan0, y * destData.Stride),
-                        IntPtr.Add(srcData.Scan0, y * srcData.Stride),
-                        (uint)srcRect.width * 4u
+                    System.Runtime.InteropServices.NativeMemory.Copy(
+                        (void*)IntPtr.Add(destData.Scan0, y * destData.Stride),
+                        (void*)IntPtr.Add(srcData.Scan0, y * srcData.Stride),
+                        (UIntPtr)((uint)srcRect.width * 4u)
                         );
             }
         }
