@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <!-- References -->
-  <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Platform.Windows.targets" />
   <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Primitives.targets" />
   <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosUtil.Debug.targets" />
   <Import Project="$(SolutionDir)submodules/ChaosPresets.References/ProjectReferences/ChaosFramework.IO.targets" />
