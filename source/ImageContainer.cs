@@ -7,15 +7,15 @@ namespace ChaosFramework.Graphics.AssetContainers
     using Imaging.Formats;
 
     public class RgbaImageContainer
-        : AssetContainer<RgbaImage>
+        : AssetContainer<Rgba8Image>
     {
         public RgbaImageContainer(StreamSource streamSource, bool monitoring = true)
             : base(streamSource, monitoring)
         { }
 
-        protected override void DisposeItem(RgbaImage obj) { }
+        protected override void DisposeItem(Rgba8Image obj) { }
 
-        protected override RgbaImage LoadFromStream(Key key, System.IO.Stream resource, CancellationToken cancel)
+        protected override Rgba8Image LoadFromStream(Key key, System.IO.Stream resource, CancellationToken cancel)
             => Png.FromStream(resource);
     }
 }

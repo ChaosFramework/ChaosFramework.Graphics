@@ -6,11 +6,10 @@ using static ChaosFramework.Math.Signs;
 namespace ChaosFramework.Graphics.Imaging.Formats
 {
     using ChaosFramework.IO.Primitives;
-    using Colors;
 
     public static partial class Png
     {
-        public static void Save(RgbaImage img, Stream target)
+        public static void Save(Rgba8Image img, Stream target)
         {
             bool opaque = true;
             for (uint y = 0; y < img.height; ++y)
@@ -25,7 +24,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
             Save(img, target, !opaque);
         }
 
-        public static void Save(RgbaImage img, Stream target, bool alpha)
+        public static void Save(Rgba8Image img, Stream target, bool alpha)
         {
             if (img == null)
                 throw new ArgumentNullException(nameof(img));
@@ -65,12 +64,12 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                     int p = 0;
                     for (uint x = 0; x < img.width; ++x)
                     {
-                        Rgba px = img[x, y];
-                        curLine[p++] = ChannelByte(px.r);
-                        curLine[p++] = ChannelByte(px.g);
-                        curLine[p++] = ChannelByte(px.b);
+                        Rgba8 px = img[x, y];
+                        curLine[p++] = px.r;
+                        curLine[p++] = px.g;
+                        curLine[p++] = px.b;
                         if (alpha)
-                            curLine[p++] = ChannelByte(px.a);
+                            curLine[p++] = px.a;
                     }
 
                     filtLine[0] = (byte)FilterType.Paeth;
@@ -118,9 +117,6 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
             WriteChunk(target, Chunks.IEND, Array.Empty<byte>());
         }
-
-        static byte ChannelByte(float v)
-            => (float.IsNaN(v) || v <= 0) ? (byte)0x00 : v >= 1 ? (byte)0xFF : (byte)(v * 255f + 0.5f);
 
         static int PaethPredictor(int a, int b, int c)
         {

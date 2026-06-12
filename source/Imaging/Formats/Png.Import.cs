@@ -8,11 +8,10 @@ using SysCol = System.Collections.Generic;
 namespace ChaosFramework.Graphics.Imaging.Formats
 {
     using ChaosFramework.IO.Primitives;
-    using Colors;
 
     public static partial class Png
     {
-        public static RgbaImage FromStream(Stream str)
+        public static Rgba8Image FromStream(Stream str)
         {
             BinaryReader rd = new BinaryReader(str);
 
@@ -112,7 +111,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                 _                        => throw new NotSupportedException("Unsupported color type")
             };
 
-            RgbaImage img = new RgbaImage(width, height);
+            Rgba8Image img = new Rgba8Image(width, height);
 
             uint srcPos = 0;
             uint rowBytes = width * bytesPerPixel;
@@ -185,11 +184,11 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                         for (int x = 0; x < width; x++)
                         {
                             int si = x * 4;
-                            img[(uint)x, y] = new Rgba(
-                                cur[si + 0] * INV,
-                                cur[si + 1] * INV,
-                                cur[si + 2] * INV,
-                                cur[si + 3] * INV
+                            img[(uint)x, y] = new Rgba8(
+                                cur[si + 0],
+                                cur[si + 1],
+                                cur[si + 2],
+                                cur[si + 3]
                                 );
                         }
                         break;
@@ -198,11 +197,11 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                         for (int x = 0; x < width; x++)
                         {
                             int si = x * 3;
-                            img[(uint)x, y] = new Rgba(
-                                cur[si + 0] * INV,
-                                cur[si + 1] * INV,
-                                cur[si + 2] * INV,
-                                1
+                            img[(uint)x, y] = new Rgba8(
+                                cur[si + 0],
+                                cur[si + 1],
+                                cur[si + 2],
+                                255
                                 );
                         }
                         break;
@@ -210,8 +209,8 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                     case ColorType.Grayscale:
                         for (int x = 0; x < width; x++)
                         {
-                            float v = cur[x] * INV;
-                            img[(uint)x, y] = new Rgba(v, v, v, 1);
+                            byte v = cur[x];
+                            img[(uint)x, y] = new Rgba8(v, v, v, 255);
                         }
                         break;
 
@@ -226,11 +225,11 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                             if (pi + 2 >= palette.Length)
                                 throw new InvalidDataException("Palette index out of range");
 
-                            img[(uint)x, y] = new Rgba(
-                                palette[pi + 0] * INV,
-                                palette[pi + 1] * INV,
-                                palette[pi + 2] * INV,
-                                1
+                            img[(uint)x, y] = new Rgba8(
+                                palette[pi + 0],
+                                palette[pi + 1],
+                                palette[pi + 2],
+                                255
                                 );
                         }
                         break;
@@ -239,9 +238,9 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                         for (int x = 0; x < width; x++)
                         {
                             int si = x * 2;
-                            float g = cur[si] * INV;
-                            float a = cur[si + 1] * INV;
-                            img[(uint)x, y] = new Rgba(g, g, g, a);
+                            byte g = cur[si];
+                            byte a = cur[si + 1];
+                            img[(uint)x, y] = new Rgba8(g, g, g, a);
                         }
                         break;
                 }
