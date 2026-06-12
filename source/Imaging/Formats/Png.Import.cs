@@ -11,7 +11,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
     public static partial class Png
     {
-        public static Rgba8Image FromStream(Stream str)
+        public static Rgba8Image FromStream(Stream str, bool flipY = true)
         {
             BinaryReader rd = new BinaryReader(str);
 
@@ -117,8 +117,10 @@ namespace ChaosFramework.Graphics.Imaging.Formats
             uint rowBytes = width * bytesPerPixel;
             byte[] prev = new byte[rowBytes];
             byte[] cur = new byte[rowBytes];
-            for (uint y = 0; y < height; ++y)
+            for (uint line = 0; line < height; ++line)
             {
+                uint y = flipY ? height - line - 1 : line;
+
                 if (srcPos >= decompressed.Length)
                     throw new Exception("Truncated IDAT");
 
