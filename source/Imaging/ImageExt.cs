@@ -8,6 +8,9 @@ namespace ChaosFramework.Graphics.Imaging
     {
         public delegate bool ValidatePixel<Color>(Color pixel);
 
+        public static Vector2i Size(this Image image)
+            => new Vector2i(image.width, image.height);
+
         public static Bounds2i TrimBitmap<Color>(
             this Image<Color> src,
             ValidatePixel<Color> isColorValid,
