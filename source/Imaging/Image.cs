@@ -5,6 +5,27 @@ namespace ChaosFramework.Graphics.Imaging
 {
     [StructLayout(LayoutKind.Sequential)]
     public record struct Rgba8(byte r, byte g, byte b, byte a);
+
+    public class RawDataHandle
+        : IDisposable
+    {
+        public readonly IntPtr firstElementAddress;
+        readonly GCHandle gcHandle;
+
+        public static RawDataHandle Create<T>(T[] arr)
+            where T: struct
+            => new RawDataHandle(GCHandle.Alloc(arr, GCHandleType.Pinned), Marshal.UnsafeAddrOfPinnedArrayElement(arr, 0));
+
+        private RawDataHandle(GCHandle gcHandle, IntPtr firstElementAddress)
+        {
+            this.gcHandle = gcHandle;
+            this.firstElementAddress = firstElementAddress;
+        }
+
+        void IDisposable.Dispose()
+            => gcHandle.Free();
+    }
+
     public interface Image
     {
         uint width {get;}
@@ -75,5 +96,8 @@ namespace ChaosFramework.Graphics.Imaging
             this.h = h;
             this.pixels = pixels;
         }
+
+        public RawDataHandle GetRawData()
+            => RawDataHandle.Create(pixels);
     }
 }
