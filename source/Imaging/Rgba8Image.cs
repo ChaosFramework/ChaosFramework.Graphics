@@ -18,7 +18,6 @@ namespace ChaosFramework.Graphics.Imaging
         {
             Rgba8[] pixels = new Rgba8[w * h];
 
-            // TODO: performance
             uint len = w * h;
             for (uint i = 0; i < len; ++i)
                 pixels[i] = rgba;
