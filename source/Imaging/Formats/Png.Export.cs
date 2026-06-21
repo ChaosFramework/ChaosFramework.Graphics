@@ -14,7 +14,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
             bool opaque = true;
             for (uint y = 0; y < img.height; ++y)
                 for (uint x = 0; x < img.width; ++x)
-                    if (img[x, y].a < 1)
+                    if (img[x, y].a < 255)
                     {
                         opaque = false;
                         goto determinedOpaqueness;
