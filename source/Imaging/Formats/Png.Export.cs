@@ -9,7 +9,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
     public static partial class Png
     {
-        public static void Save(Rgba8Image img, Stream target)
+        public static void Save(Rgba8Image img, Stream target, bool flipY = true)
         {
             bool opaque = true;
             for (uint y = 0; y < img.height; ++y)
@@ -21,10 +21,10 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                     }
 
         determinedOpaqueness:
-            Save(img, target, !opaque);
+            Save(img, target, !opaque, flipY);
         }
 
-        public static void Save(Rgba8Image img, Stream target, bool alpha)
+        public static void Save(Rgba8Image img, Stream target, bool alpha, bool flipY = true)
         {
             if (img == null)
                 throw new ArgumentNullException(nameof(img));
@@ -59,8 +59,9 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                 byte[] curLine = new byte[rowLen];
                 byte[] filtLine = new byte[1 + curLine.Length];
 
-                for (uint y = 0; y < img.height; ++y)
+                for (uint line = 0; line < img.height; ++line)
                 {
+                    uint y = flipY ? img.height - line - 1 : line;
                     int p = 0;
                     for (uint x = 0; x < img.width; ++x)
                     {
