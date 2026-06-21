@@ -6,10 +6,10 @@ namespace ChaosFramework.Graphics.AssetContainers
     using Imaging;
     using Imaging.Formats;
 
-    public class RgbaImageContainer
+    public class Rgba8ImageContainer
         : AssetContainer<Rgba8Image>
     {
-        public RgbaImageContainer(StreamSource streamSource, bool monitoring = true)
+        public Rgba8ImageContainer(StreamSource streamSource, bool monitoring = true)
             : base(streamSource, monitoring)
         { }
 
