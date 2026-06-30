@@ -73,7 +73,7 @@ namespace ChaosFramework.Graphics.Imaging
         }
 
 #if NET8_0_OR_GREATER
-        public static Icon FromStream(Stream icoStream)
+        public static Icon FromStream(Stream icoStream, bool flipY = false)
         {
             using (BinaryReader br = new BinaryReader(icoStream, System.Text.Encoding.UTF8, leaveOpen: true))
             {
@@ -91,7 +91,7 @@ namespace ChaosFramework.Graphics.Imaging
 
                         using (MemoryStream ms = new(rawImage, writable: false))
                         {
-                            Rgba8Image img = Png.FromStream(ms);
+                            Rgba8Image img = Png.FromStream(ms, flipY);
                             imgs[new Vector2i(entry.width, entry.height)] = img;
                         }
                     }
