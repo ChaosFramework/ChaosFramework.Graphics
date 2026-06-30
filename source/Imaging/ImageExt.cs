@@ -55,6 +55,7 @@ namespace ChaosFramework.Graphics.Imaging
             return rect;
         }
 
+#if NET8_0_OR_GREATER
         public static TImage CutBitmap<TImage, Color>(this TImage src, Bounds2i rect)
             where TImage : Image<Color>
             where Color : struct
@@ -70,6 +71,7 @@ namespace ChaosFramework.Graphics.Imaging
 
             return dest;
         }
+#endif
 
         public static void CopyPixels<Color>(this Image<Color> src, Image<Color> dest, Bounds2i srcRect, Vector2i position)
             where Color : struct

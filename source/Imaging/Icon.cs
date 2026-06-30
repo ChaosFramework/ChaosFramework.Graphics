@@ -72,6 +72,7 @@ namespace ChaosFramework.Graphics.Imaging
             public readonly uint imageOffset = imageOffset;
         }
 
+#if NET8_0_OR_GREATER
         public static Icon FromStream(Stream icoStream)
         {
             using (BinaryReader br = new BinaryReader(icoStream, System.Text.Encoding.UTF8, leaveOpen: true))
@@ -98,6 +99,7 @@ namespace ChaosFramework.Graphics.Imaging
                 return new(imgs);
             }
         }
+#endif
 
         public readonly IReadOnlyDictionary<Vector2i, Rgba8Image> imgs = imgs;
     }
