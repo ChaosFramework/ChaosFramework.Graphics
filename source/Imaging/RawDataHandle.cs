@@ -19,7 +19,7 @@ namespace ChaosFramework.Graphics.Imaging
             this.firstElementAddress = firstElementAddress;
         }
 
-        void IDisposable.Dispose()
+        public void Dispose()
             => gcHandle.Free();
     }
 }
