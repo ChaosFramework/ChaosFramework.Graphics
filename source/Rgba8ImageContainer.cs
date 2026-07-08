@@ -1,3 +1,4 @@
+#if NET8_0_OR_GREATER
 using ChaosFramework.IO.Containers;
 using ChaosFramework.IO.Streams;
 
@@ -16,11 +17,7 @@ namespace ChaosFramework.Graphics.AssetContainers
         protected override void DisposeItem(Rgba8Image obj) { }
 
         protected override Rgba8Image LoadFromStream(Key key, System.IO.Stream resource, CancellationToken cancel)
-            =>
-#if NET8_0_OR_GREATER
-            Png.FromStream(resource);
-#else
-            throw new System.NotSupportedException("Loading images from stream requires .NET 8.0 or greater.");
-#endif
+            => Png.FromStream(resource);
     }
 }
+#endif
