@@ -11,6 +11,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
     public static partial class Png
     {
+#if NET8_0_OR_GREATER
         public static Rgba8Image FromStream(Stream str, bool flipY = true)
         {
             BinaryReader rd = new BinaryReader(str);
@@ -58,7 +59,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
                             // ignore compression/filter/interlace bytes
                         }
 
-                        if (!Enum.GetValues<ColorType>().Contains(colorType))
+                        if (!ChaosUtil.Reflection.Enum<ColorType>.GetValues().Contains(colorType))
                             throw new NotSupportedException("Unsupported color type");
 
                         break;
@@ -253,5 +254,6 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
             return img;
         }
+#endif
     }
 }

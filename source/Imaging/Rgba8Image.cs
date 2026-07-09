@@ -8,8 +8,10 @@ namespace ChaosFramework.Graphics.Imaging
 
     public class Rgba8Image : Image<Rgba8>
     {
+#if NET8_0_OR_GREATER
         static Image<Rgba8> Image<Rgba8>.CreateEmpty(uint w, uint h)
             => new Rgba8Image(w, h);
+#endif
 
         public static Rgba8Image CreateEmpty(uint w, uint h)
             => new Rgba8Image(w, h);

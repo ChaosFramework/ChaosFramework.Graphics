@@ -1,3 +1,4 @@
+#if NET8_0_OR_GREATER
 using ChaosFramework.IO.Containers;
 using ChaosFramework.IO.Streams;
 
@@ -19,3 +20,4 @@ namespace ChaosFramework.Graphics.AssetContainers
             => Png.FromStream(resource);
     }
 }
+#endif

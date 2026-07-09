@@ -37,7 +37,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
             byte[] sig = BitConverter.GetBytes(SIG);
             Array.Reverse(sig);
-            target.Write(sig);
+            target.Write(sig, 0, sig.Length);
 
             using (MemoryStream ihdr = new MemoryStream())
             {
@@ -136,7 +136,7 @@ namespace ChaosFramework.Graphics.Imaging.Formats
 
             byte[] chunkBytes = BitConverter.GetBytes((int)chunk);
             Array.Reverse(chunkBytes);
-            s.Write(chunkBytes);
+            s.Write(chunkBytes, 0, chunkBytes.Length);
             if (data.Length > 0)
                 s.Write(data, 0, data.Length);
 
