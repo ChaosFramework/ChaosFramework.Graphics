@@ -22,7 +22,7 @@ namespace ChaosFramework.Graphics.Text
 
         /// <summary>
         ///     Minimal bounds that fully contain all printed characters,
-        ///     including leading and trailing blank space, both horizontally and vertically.
+        ///     plus leading and trailing blank space, both horizontally and vertically.
         /// </summary>
         public readonly Bounds2f textBounds;
 
