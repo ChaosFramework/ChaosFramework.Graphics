@@ -16,7 +16,16 @@ namespace ChaosFramework.Graphics.Text
     {
         // TODO: Avoid exposing these as mutable members
         public readonly int numPrintedChars = 0;
-        public readonly Bounds2f geometryBounds, textBounds;
+
+        /// <summary>Minimal bounds that fully contain all printed characters.</summary>
+        public readonly Bounds2f geometryBounds;
+
+        /// <summary>
+        ///     Minimal bounds that fully contain all printed characters,
+        ///     plus leading and trailing blank space, both horizontally and vertically.
+        /// </summary>
+        public readonly Bounds2f textBounds;
+
         public readonly UnicodeChars[][] lines;
         public readonly float[] lineWidths;
         public readonly Vector2f[] charPositions;
@@ -157,10 +166,8 @@ namespace ChaosFramework.Graphics.Text
                 else
                     charPos.y = (-letterPosY + lines.Length / 2f) * letterDistance.y - letterDistance.y * 0.5f;
 
-                textBounds.Expand(
-                    new Vector2f(0, charPos.y + 0.5f * letterDistance.y),
-                    new Vector2f(0, charPos.y - 0.5f * letterDistance.y)
-                    );
+                textBounds.Expand(new Vector2f(textBounds.center.x, charPos.y - 0.5f));
+                textBounds.Expand(new Vector2f(textBounds.center.x, charPos.y + 0.5f));
 
                 int alignCenterTabCounter = 0;
                 LinkedList<float> backspaceStack = new LinkedList<float>();
@@ -168,19 +175,21 @@ namespace ChaosFramework.Graphics.Text
                 float letterPosX = 0;
                 float maxLetterPosX = 0;
                 float minLetterPosX = 0;
-                System.Action<float> setLetterPosX = value =>
+                void setLetterPosX(float value)
                 {
                     letterPosX = value;
                     minLetterPosX = Min(minLetterPosX, value);
                     maxLetterPosX = Max(maxLetterPosX, value);
-                    textBounds.Expand(new Vector2f(letterPosX, 0));
-                };
-                System.Action<float> addLetterPosX = delta => setLetterPosX(letterPosX + delta);
+                }
+                void addLetterPosX(float delta)
+                    => setLetterPosX(letterPosX + delta);
 
                 bool rtl = horizontalAlign == Align.Right;
                 for (int i = rtl ? line.Length - 1 : 0; rtl ? (i >= 0) : i < line.Length; i = rtl ? (i - 1) : (i + 1))
                 {
                     UnicodeChars c = line[i];
+                    GlyphDimensions charDesc = args.font.GetGlyph(c);
+
                     if (!ignoreControlCharacters && c == (UnicodeChars)'\r')
                     {
                         virtualLineIndex++;
@@ -192,7 +201,11 @@ namespace ChaosFramework.Graphics.Text
                     else if (!ignoreControlCharacters && c == (UnicodeChars)'\t')
                     {
                         if (horizontalAlign == Align.Center)
+                        {
                             addLetterPosX(args.layout.tabStops[alignCenterTabCounter]);
+                            textBounds.Expand(new Vector2f(letterPosX / 2, textBounds.center.y));
+                            textBounds.Expand(new Vector2f(-letterPosX / 2, textBounds.center.y));
+                        }
                         else
                         {
                             int nextTabstopIndex = 0;
@@ -206,13 +219,13 @@ namespace ChaosFramework.Graphics.Text
                             charPositions[totalLineOffset + i] = new Vector2f(letterPosX, charPos.y);
                             setLetterPosX(tabStopPosition);
                             endOfLastChar = new Vector2f(letterPosX, charPositions[totalLineOffset + i].y);
+                            textBounds.Expand(new Vector2f(endOfLastChar.x, textBounds.center.y));
                         }
                     }
                     else if (!ignoreControlCharacters && c == (UnicodeChars)'\b')
                         addLetterPosX(-(backspaceStack.empty ? 0 : (backspaceStack.RemoveAt(backspaceStack.length - 1) * letterDistance.x)));
                     else
                     {
-                        GlyphDimensions charDesc = args.font.GetGlyph(c);
                         float charScale = GetEscapeData(charIndex + lineIndex, sizeCodes, 1);
                         float cursorAdvanceX = (monoSpace ? 1 : (charScale * charDesc.advanceCursor.x)) * letterDistance.x;
                         if (rtl)
@@ -285,14 +298,23 @@ namespace ChaosFramework.Graphics.Text
                         if (!rtl)
                             addLetterPosX(cursorAdvanceX);
 
-                        geometryBounds.low.x = Min(geometryBounds.low.x, charPos.x);
-                        geometryBounds.high.x = Max(geometryBounds.high.x, charPos.x + charDesc.charBounds.width);
-                        geometryBounds.low.y = Min(geometryBounds.low.y, charPos.y + charDesc.charBounds.bottom);
-                        geometryBounds.high.y = Max(geometryBounds.high.y, charPos.y + charDesc.charBounds.top);
-                        textBounds.Expand(
-                            new Vector2f(charPos.x, charPos.y),
-                            new Vector2f(charPos.x + cursorAdvanceX, charPos.y + letterDistance.y)
-                            );
+                        bool blank = charDesc.charBounds.area <= 0;
+
+                        if (blank)
+                        {
+                            // expand by one unit char
+                            textBounds.Expand(new Vector2f(charPos.x - 0.5f, charPos.y - 0.5f));
+                            textBounds.Expand(new Vector2f(charPos.x + 0.5f, charPos.y + 0.5f));
+                        }
+                        else
+                        {
+                            geometryBounds.low.x = Min(geometryBounds.low.x, charPos.x + charDesc.charBounds.low.x);
+                            geometryBounds.high.x = Max(geometryBounds.high.x, charPos.x + charDesc.charBounds.high.x);
+                            geometryBounds.low.y = Min(geometryBounds.low.y, charPos.y + charDesc.charBounds.low.y);
+                            geometryBounds.high.y = Max(geometryBounds.high.y, charPos.y + charDesc.charBounds.high.y);
+                            textBounds.Expand(geometryBounds);
+                        }
+
                         charIndex++;
 
                         if ((maxLetterPosX - minLetterPosX) > args.layout.maxLineWidth)
